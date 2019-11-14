@@ -23,10 +23,7 @@
 <script>
 export default {
 	name:"TabBar",
-  data () {
-    return {
-    }
-  }
+ 
 }
 </script>
 
