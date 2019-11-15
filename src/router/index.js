@@ -30,7 +30,7 @@ const routes = [
   movieRouter,
   cinemaRouter,
   mineRouter,
- 
+ /* 什么路由下显示什么组件  ，如/movie显示movieRouter*/
   {
     path : '/*',
     redirect : '/movie'            //默认路由，重定向
