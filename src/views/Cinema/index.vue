@@ -41,7 +41,7 @@ import TabBar from "@/components/TabBar";
 import CiList from "@/components/CiList";
 
 export default {
-  name: "cinema",
+  name: "cinema1",
   components: {
     Header,
     TabBar,
