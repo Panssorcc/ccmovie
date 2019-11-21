@@ -1,6 +1,7 @@
 <!-- 即将上映组件 -->
 <template>
   <div class="movie_body">
+    <Scroller>
     <ul>
       <li v-for="item in comingList" :key="item.id">
         <div class="pic_show">
@@ -21,6 +22,7 @@
         <div class="btn_pre">预售</div>
       </li>
     </ul>
+    </Scroller>
   </div>
 </template>
 
@@ -41,6 +43,7 @@ export default {
         this.comingList = res.data.data.comingList;
       }
     });
+   
   }
 };
 </script>

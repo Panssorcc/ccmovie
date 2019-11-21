@@ -24,12 +24,11 @@
               <router-view></router-view>     子组件显示的地方
             </keep-alive>
       -->
-
-      <CiList/>  <!-- 影院组件内容 -->
-
-    </div>
-    
+<CiList /> 
    
+      <!-- 影院组件内容 -->
+    </div>
+
     <TabBar />
   </div>
 </template>
