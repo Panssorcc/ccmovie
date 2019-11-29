@@ -1,6 +1,6 @@
 <!-- 搜索组件 -->
 <template>
-  <div class="search_body">
+  <div class="search_body slide-enter-active">
     <div class="search_input">
       <div class="search_input_wrapper">
         <i class="iconfont icon-sousuo"></i>
@@ -25,7 +25,7 @@
           </div>
         </li>-->
         <li v-for="item in  moviesList" :key="item.id">
-          <div class="img">
+          <div class="img"  @click="handleToDetail(item.id)">
             <img :src="item.img | setWH('130.180')" />
           </div>
           <div class="info">
@@ -48,44 +48,63 @@ export default {
   name: "search",
   data() {
     return {
-        message : '',
-        moviesList : []
+      message: "",
+      moviesList: []
     };
   },
+ 
   watch: {
     message(val) {
-        var  that=this;
-        this.cancelRequest();
-        this.axios.get("/api/searchList?cityId=10&kw=" + val, {             
-                cancelToken: new this.axios.CancelToken(function(c) {
-                  console.log(1111)
-                    that.source = c;
-                })
-            }).then(res => {
+      var that = this;
+      this.cancelRequest();
+      this.axios
+        .get("/api/searchList?cityId=10&kw=" + val, {
+          cancelToken: new this.axios.CancelToken(function(c) {
+            that.source = c;
+          })
+        })
+        .then(res => {
           console.log(res.data.data.movies.list);
           this.moviesList = res.data.data.movies.list;
-        }).catch((err) => {
-                if (this.axios.isCancel(err)) {
-                    console.log('Rquest canceled', err.message); //请求如果被取消，这里是返回取消的message
-                } else {
-                    //handle error
-                    console.log(err);
-                }
-            })    ;
-      
+        })
+        .catch(err => {
+          console.log(err);
+          if (this.axios.isCancel(err)) {
+            console.log("Rquest canceled", err.message); //请求如果被取消，这里是返回取消的message
+          } else {
+            //handle error
+            console.log(err);
+            console.log("输入错误");
+          }
+        });
     }
   },
   methods: {
-         cancelRequest(){
-            if(typeof this.source ==='function'){
-                this.source('终止请求')
-            }
+    cancelRequest() {
+      if (typeof this.source === "function") {
+        this.source("终止请求");
+      }
+    },
+     handleToDetail(movieId){
+        console.log(movieId);
+        this.$router.push('/movie/detail/search/' + movieId);
         }
-    }
+  }
 };
 </script>
 
 <style scoped>
+#content .slide-enter-active {
+  animation: 0.3s slideMove;
+}
+@keyframes slideMove {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
 #content .search_body {
   flex: 1;
   overflow: auto;
@@ -149,6 +168,12 @@ export default {
   display: flex;
   line-height: 22px;
   font-size: 12px;
+}
+.search_body .search_result .info p > span:nth-child(1) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
 }
 .search_body .search_result .info p:nth-of-type(1) span:nth-of-type(1) {
   font-size: 18px;
