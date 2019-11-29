@@ -2,27 +2,30 @@
 <template>
   <div id="main">
     <Header title="Cc电影" />
+
     <div id="content">
       <div class="movie_menu">
-        <router-link to="/movie/city" tag="div" class="city_name ">
-          <span>大连</span>
+        <router-link to="/movie/city" tag="div" class="city_name">
+          <span>{{$store.state.city.nm}}</span>
           <i class="iconfont icon-lower-triangle"></i>
         </router-link>
         <div class="hot_swtich">
-          <router-link  to="/movie/nowPlaying" tag="div"  class="hot_item">正在热映</router-link>
-          <router-link to="/movie/comingSoon" tag="div"  class="hot_item">即将上映</router-link>
+          <router-link to="/movie/nowPlaying" tag="div" class="hot_item">正在热映</router-link>
+          <router-link to="/movie/comingSoon" tag="div" class="hot_item">即将上映</router-link>
         </div>
-        <router-link to="/movie/search" tag="div"  class="search_entry">
+        <router-link to="/movie/search" tag="div" class="search_entry">
           <i class="iconfont icon-sousuo"></i>
         </router-link>
       </div>
       <!-- 子组件中间内容 显示  -->
+
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
     </div>
 
     <TabBar />
+    <router-view name="detail" />
   </div>
 </template>
 
@@ -30,12 +33,48 @@
 <script>
 import Header from "@/components/Header";
 import TabBar from "@/components/TabBar";
+import { messageBox } from "@/components/JS";
 
 export default {
   name: "Movie",
+  data() {
+    return {
+      ismsgBox: true
+    };
+  },
   components: {
     Header,
     TabBar
+    // MessageBox
+  },
+  mounted() {
+    setTimeout(()=>{
+       this.axios.get("/api/getLocation").then(res => {
+      console.log(res.data.data);
+      let nm = res.data.data.nm;
+      let id = res.data.data.id;
+      window.localStorage.setItem("oneIp", 1);
+     
+
+      if(this.$store.state.city.id==id && window.localStorage.getItem("oneIp")==1 ){return}//只定位一次
+      messageBox({
+        title: "定位",
+        content: nm,
+        cancel: "取消",
+        ok: "切换定位",
+        handleCancel() {
+          console.log('取消定位');
+        },
+        handleOk() {
+          window.localStorage.setItem("nowNm", nm);
+          window.localStorage.setItem("nowId", id);
+          window.location.reload();
+        }
+      });
+    });
+
+    },3000)
+   
   }
 };
 </script>

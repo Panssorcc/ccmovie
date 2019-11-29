@@ -16,6 +16,18 @@ Vue.filter('setWH',(url , arg)=>{
 import Scroller from '@/components/Scroller'
 Vue.component('Scroller' , Scroller);
 
+import Loading from '@/components/Loading'
+Vue.component('Loading' , Loading);
+
+import noFound from '@/components/noFound'
+Vue.component('noFound' , noFound);
+
+
+
+/* 引入mintUI */
+import MintUI from 'mint-ui';
+import 'mint-ui/lib/style.css';
+Vue.use(MintUI);
 
 
 Vue.config.productionTip = false

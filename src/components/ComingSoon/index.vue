@@ -1,10 +1,11 @@
 <!-- 即将上映组件 -->
 <template>
   <div class="movie_body">
-    <Scroller>
+    <Loading v-if="isLoading"/>
+    <Scroller v-else>
     <ul>
       <li v-for="item in comingList" :key="item.id">
-        <div class="pic_show">
+        <div class="pic_show"  @tap="handleToDetail(item.id)">
           <img :src="item.img | setWH('150.180')" /><!-- 全局过滤器 -->
         </div>
         <div class="info_list">
@@ -31,13 +32,23 @@ export default {
   name: "comingSoon",
   data() {
     return {
-      comingList: []
+      comingList: [],
+       isLoading:true
     };
   },
+   methods: {
+
+     handleToDetail(movieId){
+         
+            this.$router.push('/movie/detail/2/' + movieId);
+        },
+   },
   mounted() {
+    this.isLoading = true;
     this.axios.get("/api/movieComingList?cityId=10").then(res => {
       var msg = res.data.msg;
       if (msg === "ok") {
+        this.isLoading = false;
         console.log(res.data);
 
         this.comingList = res.data.data.comingList;

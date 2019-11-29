@@ -1,11 +1,14 @@
 <!-- 正在热映组件 -->
 <template>
   <div class="movie_body" ref="movie_body">
-       <Scroller :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
-      <ul>
+    <Loading v-if="isLoading" />
+    <Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
+      <!-- <Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd"> -->
+      <noFound v-if="isnoFound"/>
+      <ul v-else>
         <div>{{pullDownMsg}}</div>
-        <li v-for="item in movieList" :key="item.id">
-          <div class="pic_show">
+        <li v-for="item in movieList" :key="item.id" >
+          <div class="pic_show" @tap="handleToDetail(item.id)">
             <img :src="item.img | setWH('130.180')" />
           </div>
           <div class="info_list">
@@ -23,6 +26,7 @@
           <div class="btn_mall">购票</div>
         </li>
       </ul>
+      
     </Scroller>
   </div>
 </template>
@@ -35,22 +39,31 @@ export default {
   data() {
     return {
       movieList: [],
-      pullDownMsg: ""
+      pullDownMsg: "",
+      isLoading: true, 
+      isnoFound: false, 
+      prevCityId : -1
     };
   },
-   methods : {
-     /* 只要滑动就会触发 */
+  methods: {
+    
+
+     handleToDetail(movieId){
+            this.$router.push('/movie/detail/1/' + movieId);
+        },
+    /* 只要滑动就会触发 */
     handleToScroll(pos) {
       // console.log(pos);//{x: 0, y: 144.57363382975262}
       if (pos.y > 30) {
         this.pullDownMsg = "loading...";
       }
     },
+    
 
     handleToTouchEnd(pos) {
-      
+       var cityId = this.$store.state.city.id;
       if (pos.y > 30) {
-        this.axios.get("/api/movieOnInfoList?cityId=8").then(res => {
+        this.axios.get("/api/movieOnInfoList?cityId=" + cityId).then(res => {
           var msg = res.data.msg;
           if (msg === "ok") {
             this.pullDownMsg = "更新成功";
@@ -63,13 +76,29 @@ export default {
       }
     }
   },
-  mounted() {
-    this.axios.get("/api/movieOnInfoList?cityId=10").then(res => {
+  activated() {
+  
+    var cityId = this.$store.state.city.id;
+    if( this.prevCityId === cityId ){ return; }
+
+    this.isLoading = true;
+    this.isnoFound=false;
+  
+    this.axios.get("/api/movieOnInfoList?cityId=" + cityId).then(res => {
       var msg = res.data.msg;
       if (msg === "ok") {
-        console.log(res.data);
-
-        this.movieList = res.data.data.movieList;
+       
+        if (res.data.data.movieList.length==0) {
+            this.isnoFound=true;
+            this.isLoading = false;
+      
+        } else {
+          this.isLoading = false;
+          //  this.isnoFound=false;
+          console.log(res.data);
+          this.prevCityId=cityId;
+          this.movieList = res.data.data.movieList;
+        }
 
         /*   this.$nextTick(() => {
           var scroll = new BScroll(this.$refs.movie_body, {

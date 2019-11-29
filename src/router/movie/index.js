@@ -25,13 +25,24 @@ export default {
                 detail : ()=> import('@/views/Movie/detail')
             },
             props : {
-                detail : true
+               
+                detail : true//路由组件传参路由组件传参,将movieId传给组件
             }
         },
         {
             path : 'detail/2/:movieId',
             components : {
                 default : ()=> import('@/components/ComingSoon'),
+                detail : ()=> import('@/views/Movie/detail')
+            },
+            props : {
+                detail : true
+            }
+        },
+        {
+            path : 'detail/search/:movieId',
+            components : {
+                default : ()=> import('@/components/Search'),
                 detail : ()=> import('@/views/Movie/detail')
             },
             props : {
